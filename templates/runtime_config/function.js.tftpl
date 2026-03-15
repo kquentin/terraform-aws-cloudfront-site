@@ -1,0 +1,11 @@
+function handler(event) {
+  return {
+    statusCode: 200,
+    statusDescription: "OK",
+    headers: {
+      "content-type": { value: "application/javascript" },
+      "cache-control": { value: "no-cache, no-store, must-revalidate" }
+    },
+    body: 'window.__ENV__ = ${jsonencode(config)};'
+  };
+}

@@ -1,0 +1,101 @@
+{
+  "name": "my-spa",
+  "tags": {
+    "Project": "my-spa",
+    "Environment": "production"
+  },
+
+  "domain_alias": "app.example.com",
+  "record_type": "A",
+  "alternative_domain_names": ["www.app.example.com"],
+
+  "origins": [
+    {
+      "key": "s3"
+    },
+    {
+      "key": "api",
+      "origin_id": "api-origin",
+      "domain_name": "api.example.com",
+      "custom_origin_config": {
+        "http_port": 80,
+        "https_port": 443,
+        "origin_protocol_policy": "https-only",
+        "origin_ssl_protocols": ["TLSv1.2"]
+      }
+    }
+  ],
+
+  "default_behavior": {
+    "target_origin_key": "s3",
+    "viewer_protocol_policy": "redirect-to-https",
+    "allowed_methods": ["GET", "HEAD"],
+    "cached_methods": ["GET", "HEAD"],
+    "compress": true
+  },
+
+  "extra_behaviors": [
+    {
+      "path_pattern": "/api/*",
+      "target_origin_key": "api",
+      "viewer_protocol_policy": "https-only",
+      "allowed_methods": ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"],
+      "cached_methods": ["GET", "HEAD"],
+      "cache_policy_name": "Managed-CachingDisabled",
+      "origin_request_policy_name": "Managed-AllViewerExceptHostHeader",
+      "compress": false
+    }
+  ],
+
+  "custom_error_responses": [
+    {
+      "error_code": 403,
+      "response_code": 200,
+      "response_page_path": "/index.html",
+      "error_caching_min_ttl": 10
+    },
+    {
+      "error_code": 404,
+      "response_code": 200,
+      "response_page_path": "/index.html",
+      "error_caching_min_ttl": 10
+    }
+  ],
+
+  "security_headers_config": {
+    "strict_transport_security": {
+      "override": true,
+      "include_subdomains": true,
+      "access_control_max_age_sec": 63072000,
+      "preload": true
+    },
+    "content_type_options": {
+      "override": true
+    },
+    "content_security_policy": {
+      "override": true,
+      "content_security_policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.example.com"
+    },
+    "frame_options": {
+      "override": true,
+      "frame_option": "DENY"
+    },
+    "referrer_policy": {
+      "override": true,
+      "referrer_policy": "strict-origin-when-cross-origin"
+    }
+  },
+
+  "custom_headers_config": [
+    {
+      "header": "X-Custom-Header",
+      "value": "my-value",
+      "override": true
+    }
+  ],
+
+  "runtime_environment_config": {
+    "API_URL": "https://api.example.com",
+    "ENVIRONMENT": "production"
+  }
+}

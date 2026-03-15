@@ -1,0 +1,54 @@
+{
+  "name": "my-website",
+  "tags": {
+    "Project": "my-website",
+    "Environment": "production"
+  },
+
+  "domain_alias": "example.com",
+  "record_type": "A",
+  "alternative_domain_names": ["www.example.com"],
+
+  "origins": [
+    {
+      "key": "s3"
+    }
+  ],
+
+  "default_behavior": {
+    "target_origin_key": "s3",
+    "viewer_protocol_policy": "redirect-to-https",
+    "allowed_methods": ["GET", "HEAD"],
+    "cached_methods": ["GET", "HEAD"],
+    "compress": true
+  },
+
+  "custom_error_responses": [
+    {
+      "error_code": 404,
+      "response_code": 404,
+      "response_page_path": "/error.html",
+      "error_caching_min_ttl": 60
+    }
+  ],
+
+  "security_headers_config": {
+    "strict_transport_security": {
+      "override": true,
+      "include_subdomains": true,
+      "access_control_max_age_sec": 63072000,
+      "preload": true
+    },
+    "content_type_options": {
+      "override": true
+    },
+    "frame_options": {
+      "override": true,
+      "frame_option": "DENY"
+    },
+    "referrer_policy": {
+      "override": true,
+      "referrer_policy": "strict-origin-when-cross-origin"
+    }
+  }
+}
