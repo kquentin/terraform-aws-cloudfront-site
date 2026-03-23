@@ -20,7 +20,8 @@
     "viewer_protocol_policy": "redirect-to-https",
     "allowed_methods": ["GET", "HEAD"],
     "cached_methods": ["GET", "HEAD"],
-    "compress": true
+    "compress": true,
+    "cache_policy_name": "Managed-CachingOptimized"
   },
 
   "custom_error_responses": [

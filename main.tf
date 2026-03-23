@@ -98,6 +98,25 @@ resource "aws_cloudfront_distribution" "this" {
     origin_request_policy_id   = local.resolved_default_behavior.origin_request_policy_id
     response_headers_policy_id = aws_cloudfront_response_headers_policy.this.id
 
+    min_ttl     = local.resolved_default_behavior.min_ttl
+    default_ttl = local.resolved_default_behavior.default_ttl
+    max_ttl     = local.resolved_default_behavior.max_ttl
+
+    dynamic "forwarded_values" {
+      for_each = local.resolved_default_behavior.forwarded_values != null ? [local.resolved_default_behavior.forwarded_values] : []
+
+      content {
+        query_string            = forwarded_values.value.query_string
+        query_string_cache_keys = forwarded_values.value.query_string_cache_keys
+        headers                 = forwarded_values.value.headers
+
+        cookies {
+          forward           = forwarded_values.value.cookies.forward
+          whitelisted_names = forwarded_values.value.cookies.whitelisted_names
+        }
+      }
+    }
+
     dynamic "lambda_function_association" {
       for_each = local.resolved_default_behavior.lambda_function_associations
 
@@ -133,6 +152,25 @@ resource "aws_cloudfront_distribution" "this" {
       origin_request_policy_id = ordered_cache_behavior.value.origin_request_policy_id
 
       response_headers_policy_id = aws_cloudfront_response_headers_policy.this.id
+
+      min_ttl     = ordered_cache_behavior.value.min_ttl
+      default_ttl = ordered_cache_behavior.value.default_ttl
+      max_ttl     = ordered_cache_behavior.value.max_ttl
+
+      dynamic "forwarded_values" {
+        for_each = ordered_cache_behavior.value.forwarded_values != null ? [ordered_cache_behavior.value.forwarded_values] : []
+
+        content {
+          query_string            = forwarded_values.value.query_string
+          query_string_cache_keys = forwarded_values.value.query_string_cache_keys
+          headers                 = forwarded_values.value.headers
+
+          cookies {
+            forward           = forwarded_values.value.cookies.forward
+            whitelisted_names = forwarded_values.value.cookies.whitelisted_names
+          }
+        }
+      }
 
       dynamic "lambda_function_association" {
         for_each = ordered_cache_behavior.value.lambda_function_associations != null ? ordered_cache_behavior.value.lambda_function_associations : []

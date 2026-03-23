@@ -71,8 +71,20 @@ variable "config" {
       allowed_methods            = list(string)
       cached_methods             = list(string)
       compress                   = optional(bool, false)
-      cache_policy_name          = optional(string, "Managed-CachingOptimized")
+      cache_policy_name          = optional(string)
       origin_request_policy_name = optional(string)
+      min_ttl                    = optional(number)
+      default_ttl                = optional(number)
+      max_ttl                    = optional(number)
+      forwarded_values = optional(object({
+        query_string            = bool
+        query_string_cache_keys = optional(list(string))
+        headers                 = optional(list(string))
+        cookies = object({
+          forward           = string
+          whitelisted_names = optional(list(string))
+        })
+      }))
       lambda_function_associations = optional(list(object({
         event_type   = string
         lambda_arn   = string
@@ -91,8 +103,20 @@ variable "config" {
       allowed_methods            = list(string)
       cached_methods             = list(string)
       compress                   = optional(bool, false)
-      cache_policy_name          = string
+      cache_policy_name          = optional(string)
       origin_request_policy_name = optional(string)
+      min_ttl                    = optional(number)
+      default_ttl                = optional(number)
+      max_ttl                    = optional(number)
+      forwarded_values = optional(object({
+        query_string            = bool
+        query_string_cache_keys = optional(list(string))
+        headers                 = optional(list(string))
+        cookies = object({
+          forward           = string
+          whitelisted_names = optional(list(string))
+        })
+      }))
       lambda_function_associations = optional(list(object({
         event_type   = string
         lambda_arn   = string
@@ -139,5 +163,6 @@ variable "config" {
 
     runtime_environment_config = optional(map(string))
   })
+
 }
 
