@@ -1,3 +1,8 @@
+resource "aws_s3_bucket_policy" "website" {
+  bucket = var.website_bucket.id
+  policy = data.aws_iam_policy_document.this.json
+}
+
 resource "aws_cloudfront_response_headers_policy" "this" {
   name = "${var.config.name}-response-headers-policy"
 

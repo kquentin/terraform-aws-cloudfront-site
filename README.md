@@ -29,6 +29,8 @@ module "site" {
   oac_id         = aws_cloudfront_origin_access_control.this.id
 
   website_bucket = {
+    arn                         = module.website.arn
+    id                          = module.website.id
     bucket_regional_domain_name = module.website.bucket_regional_domain_name
   }
 

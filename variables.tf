@@ -10,6 +10,8 @@ variable "oac_id" {
 
 variable "website_bucket" {
   type = object({
+    arn                         = string
+    id                          = string
     bucket_regional_domain_name = string
   })
   description = "Website S3 bucket."
