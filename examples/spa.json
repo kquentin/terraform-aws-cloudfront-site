@@ -4,15 +4,12 @@
     "Project": "my-spa",
     "Environment": "production"
   },
-
   "domain_alias": "app.example.com",
   "record_type": "A",
-  "alternative_domain_names": ["www.app.example.com"],
-
+  "alternative_domain_names": [
+    "www.app.example.com"
+  ],
   "origins": [
-    {
-      "key": "s3"
-    },
     {
       "key": "api",
       "origin_id": "api-origin",
@@ -21,33 +18,49 @@
         "http_port": 80,
         "https_port": 443,
         "origin_protocol_policy": "https-only",
-        "origin_ssl_protocols": ["TLSv1.2"]
+        "origin_ssl_protocols": [
+          "TLSv1.2"
+        ]
       }
     }
   ],
-
   "default_behavior": {
-    "target_origin_key": "s3",
+    "target_origin_key": "s3-origin",
     "viewer_protocol_policy": "redirect-to-https",
-    "allowed_methods": ["GET", "HEAD"],
-    "cached_methods": ["GET", "HEAD"],
+    "allowed_methods": [
+      "GET",
+      "HEAD"
+    ],
+    "cached_methods": [
+      "GET",
+      "HEAD"
+    ],
     "compress": true,
     "cache_policy_name": "Managed-CachingOptimized"
   },
-
   "extra_behaviors": [
     {
       "path_pattern": "/api/*",
       "target_origin_key": "api",
       "viewer_protocol_policy": "https-only",
-      "allowed_methods": ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"],
-      "cached_methods": ["GET", "HEAD"],
+      "allowed_methods": [
+        "GET",
+        "HEAD",
+        "OPTIONS",
+        "PUT",
+        "POST",
+        "PATCH",
+        "DELETE"
+      ],
+      "cached_methods": [
+        "GET",
+        "HEAD"
+      ],
       "cache_policy_name": "Managed-CachingDisabled",
       "origin_request_policy_name": "Managed-AllViewerExceptHostHeader",
       "compress": false
     }
   ],
-
   "custom_error_responses": [
     {
       "error_code": 403,
@@ -62,7 +75,6 @@
       "error_caching_min_ttl": 10
     }
   ],
-
   "security_headers_config": {
     "strict_transport_security": {
       "override": true,
@@ -86,7 +98,6 @@
       "referrer_policy": "strict-origin-when-cross-origin"
     }
   },
-
   "custom_headers_config": [
     {
       "header": "X-Custom-Header",
@@ -94,7 +105,6 @@
       "override": true
     }
   ],
-
   "runtime_environment_config": {
     "API_URL": "https://api.example.com",
     "ENVIRONMENT": "production"

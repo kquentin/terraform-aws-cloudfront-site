@@ -4,26 +4,26 @@
     "Project": "my-website",
     "Environment": "production"
   },
-
   "domain_alias": "example.com",
   "record_type": "A",
-  "alternative_domain_names": ["www.example.com"],
-
-  "origins": [
-    {
-      "key": "s3"
-    }
+  "alternative_domain_names": [
+    "www.example.com"
   ],
-
+  "origins": [],
   "default_behavior": {
-    "target_origin_key": "s3",
+    "target_origin_key": "s3-origin",
     "viewer_protocol_policy": "redirect-to-https",
-    "allowed_methods": ["GET", "HEAD"],
-    "cached_methods": ["GET", "HEAD"],
+    "allowed_methods": [
+      "GET",
+      "HEAD"
+    ],
+    "cached_methods": [
+      "GET",
+      "HEAD"
+    ],
     "compress": true,
     "cache_policy_name": "Managed-CachingOptimized"
   },
-
   "custom_error_responses": [
     {
       "error_code": 404,
@@ -32,7 +32,6 @@
       "error_caching_min_ttl": 60
     }
   ],
-
   "security_headers_config": {
     "strict_transport_security": {
       "override": true,

@@ -1,3 +1,8 @@
+variable "certificate_arn" {
+  type        = string
+  description = "ACM certificate ARN for the CloudFront distribution (must be in us-east-1)."
+}
+
 variable "domain_zone_id" {
   type        = string
   description = "Route53 hosted zone ID for DNS records."
@@ -17,11 +22,9 @@ variable "website_bucket" {
   description = "Website S3 bucket."
 }
 
-variable "logs_bucket" {
-  type = object({
-    bucket_domain_name = string
-  })
-  description = "Logs S3 bucket. If null, access logging is disabled."
+variable "logs_bucket_domain_name" {
+  type        = string
+  description = "S3 bucket domain name for access logs. If null, logging is disabled."
   default     = null
 }
 
@@ -42,6 +45,12 @@ variable "waf_arn" {
   default     = null
 }
 
+variable "edge_lambda_arns" {
+  type        = map(string)
+  description = "Map of Lambda@Edge key names to qualified ARNs."
+  default     = {}
+}
+
 variable "config" {
   description = "Full site configuration loaded from JSON."
 
@@ -58,7 +67,7 @@ variable "config" {
     origins = list(object({
       key         = string
       origin_id   = optional(string)
-      domain_name = optional(string)
+      domain_name = string
       custom_origin_config = optional(object({
         http_port              = number
         https_port             = number
@@ -89,7 +98,7 @@ variable "config" {
       }))
       lambda_function_associations = optional(list(object({
         event_type   = string
-        lambda_arn   = string
+        lambda_key   = string
         include_body = optional(bool)
       })))
       function_associations = optional(list(object({
@@ -121,7 +130,7 @@ variable "config" {
       }))
       lambda_function_associations = optional(list(object({
         event_type   = string
-        lambda_arn   = string
+        lambda_key   = string
         include_body = optional(bool)
       })))
     })))
@@ -165,6 +174,4 @@ variable "config" {
 
     runtime_environment_config = optional(map(string))
   })
-
 }
-

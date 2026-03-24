@@ -62,12 +62,12 @@ resource "aws_cloudfront_distribution" "this" {
   default_root_object = "index.html"
   wait_for_deployment = true
 
-  aliases     = local.cloudfront_domains
+  aliases     = local.domain_names
   price_class = var.price_class
   web_acl_id  = var.waf_arn
 
   viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate_validation.this.certificate_arn
+    acm_certificate_arn      = var.certificate_arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
   }
@@ -217,9 +217,9 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   dynamic "logging_config" {
-    for_each = var.logs_bucket != null ? [1] : []
+    for_each = var.logs_bucket_domain_name != null ? [1] : []
     content {
-      bucket          = var.logs_bucket.bucket_domain_name
+      bucket          = var.logs_bucket_domain_name
       prefix          = "${var.config.name}/"
       include_cookies = false
     }
