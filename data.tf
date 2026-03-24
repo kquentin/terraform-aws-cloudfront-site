@@ -12,7 +12,7 @@ data "aws_cloudfront_origin_request_policy" "this" {
 
 data "aws_iam_policy_document" "this" {
   statement {
-    effect = "Allow"
+    effect    = "Allow"
     actions   = ["s3:GetObject"]
     resources = ["${var.website_bucket.arn}/*"]
 
