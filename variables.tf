@@ -70,7 +70,7 @@ variable "config" {
 
     http_version = optional(string, "http2and3")
 
-    origins = list(object({
+    origins = optional(list(object({
       key         = string
       origin_id   = optional(string)
       domain_name = optional(string)
@@ -84,7 +84,7 @@ variable "config" {
         name  = string
         value = string
       })))
-    }))
+    })), [])
 
     default_behavior = object({
       target_origin_key          = string
