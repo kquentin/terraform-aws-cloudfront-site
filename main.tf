@@ -89,6 +89,15 @@ resource "aws_cloudfront_distribution" "this" {
           origin_ssl_protocols   = origin.value.custom_origin_config.origin_ssl_protocols
         }
       }
+
+      dynamic "custom_header" {
+        for_each = origin.value.custom_headers
+
+        content {
+          name  = custom_header.value.name
+          value = custom_header.value.value
+        }
+      }
     }
   }
 

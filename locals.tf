@@ -38,6 +38,7 @@ locals {
     domain_name              = var.website_bucket.bucket_regional_domain_name
     origin_access_control_id = var.oac_id
     custom_origin_config     = null
+    custom_headers           = []
   }
 
   extra_origins = { for origin in var.config.origins : origin.key => {
@@ -46,6 +47,7 @@ locals {
     domain_name              = origin.domain_name
     origin_access_control_id = null
     custom_origin_config     = origin.custom_origin_config
+    custom_headers           = origin.custom_headers != null ? origin.custom_headers : []
   } }
 
   origin_map = merge({ "s3-origin" = local.s3_origin }, local.extra_origins)
@@ -67,7 +69,10 @@ locals {
       lambda_arn   = var.edge_lambda_arns[assoc.lambda_key]
       include_body = assoc.include_body
     }]
-    function_associations = var.config.default_behavior.function_associations != null ? var.config.default_behavior.function_associations : []
+    function_associations = [for assoc in (var.config.default_behavior.function_associations != null ? var.config.default_behavior.function_associations : []) : {
+      event_type   = assoc.event_type
+      function_arn = var.cloudfront_function_arns[assoc.function_key]
+    }]
   }
 
   resolved_extra_behaviors = concat(
@@ -109,7 +114,10 @@ locals {
           lambda_arn   = var.edge_lambda_arns[assoc.lambda_key]
           include_body = assoc.include_body
         }]
-        function_associations = null
+        function_associations = [for assoc in (behavior.function_associations != null ? behavior.function_associations : []) : {
+          event_type   = assoc.event_type
+          function_arn = var.cloudfront_function_arns[assoc.function_key]
+        }]
       }
     ]
   )

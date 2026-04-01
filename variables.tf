@@ -51,6 +51,12 @@ variable "edge_lambda_arns" {
   default     = {}
 }
 
+variable "cloudfront_function_arns" {
+  type        = map(string)
+  description = "Map of CloudFront Function key names to ARNs."
+  default     = {}
+}
+
 variable "config" {
   description = "Full site configuration loaded from JSON."
 
@@ -67,13 +73,17 @@ variable "config" {
     origins = list(object({
       key         = string
       origin_id   = optional(string)
-      domain_name = string
+      domain_name = optional(string)
       custom_origin_config = optional(object({
         http_port              = number
         https_port             = number
         origin_protocol_policy = string
         origin_ssl_protocols   = list(string)
       }))
+      custom_headers = optional(list(object({
+        name  = string
+        value = string
+      })))
     }))
 
     default_behavior = object({
@@ -103,7 +113,7 @@ variable "config" {
       })))
       function_associations = optional(list(object({
         event_type   = string
-        function_arn = string
+        function_key = string
       })))
     })
 
@@ -132,6 +142,10 @@ variable "config" {
         event_type   = string
         lambda_key   = string
         include_body = optional(bool)
+      })))
+      function_associations = optional(list(object({
+        event_type   = string
+        function_key = string
       })))
     })))
 
