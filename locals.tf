@@ -1,5 +1,5 @@
 locals {
-  alternative_domain_names = coalesce(var.config.alternative_domain_names, [])
+  alternative_domain_names = var.config.alternative_domain_names != null ? var.config.alternative_domain_names : []
   domain_names             = concat([var.config.domain_alias], local.alternative_domain_names)
 
   is_alias_record = var.config.record_type != "CNAME"
@@ -8,10 +8,10 @@ locals {
   runtime_config_cache_policy_name = "Managed-CachingDisabled"
   runtime_config_function_code = templatefile(
     "${path.module}/templates/runtime_config/function.js.tftpl",
-    { config = coalesce(var.config.runtime_environment_config, {}) }
+    { config = var.config.runtime_environment_config != null ? var.config.runtime_environment_config : {} }
   )
 
-  extra_behaviors = coalesce(var.config.extra_behaviors, [])
+  extra_behaviors = var.config.extra_behaviors != null ? var.config.extra_behaviors : []
 
   # Resolve policy names to IDs via data sources (see data.tf).
   # Collect all names used across behaviors and strip nulls from optional fields.
@@ -42,7 +42,7 @@ locals {
 
   extra_origins = { for origin in var.config.origins : origin.key => {
     key                      = origin.key
-    origin_id                = coalesce(origin.origin_id, origin.key)
+    origin_id                = origin.origin_id != null ? origin.origin_id : origin.key
     domain_name              = origin.domain_name
     origin_access_control_id = null
     custom_origin_config     = origin.custom_origin_config
@@ -62,12 +62,12 @@ locals {
     min_ttl                  = var.config.default_behavior.min_ttl
     default_ttl              = var.config.default_behavior.default_ttl
     max_ttl                  = var.config.default_behavior.max_ttl
-    lambda_function_associations = [for assoc in coalesce(var.config.default_behavior.lambda_function_associations, []) : {
+    lambda_function_associations = [for assoc in (var.config.default_behavior.lambda_function_associations != null ? var.config.default_behavior.lambda_function_associations : []) : {
       event_type   = assoc.event_type
       lambda_arn   = var.edge_lambda_arns[assoc.lambda_key]
       include_body = assoc.include_body
     }]
-    function_associations = coalesce(var.config.default_behavior.function_associations, [])
+    function_associations = var.config.default_behavior.function_associations != null ? var.config.default_behavior.function_associations : []
   }
 
   resolved_extra_behaviors = concat(
@@ -104,7 +104,7 @@ locals {
         min_ttl                  = behavior.min_ttl
         default_ttl              = behavior.default_ttl
         max_ttl                  = behavior.max_ttl
-        lambda_function_associations = [for assoc in coalesce(behavior.lambda_function_associations, []) : {
+        lambda_function_associations = [for assoc in (behavior.lambda_function_associations != null ? behavior.lambda_function_associations : []) : {
           event_type   = assoc.event_type
           lambda_arn   = var.edge_lambda_arns[assoc.lambda_key]
           include_body = assoc.include_body
