@@ -58,8 +58,8 @@ locals {
     allowed_methods          = var.config.default_behavior.allowed_methods
     cached_methods           = var.config.default_behavior.cached_methods
     compress                 = var.config.default_behavior.compress
-    cache_policy_id          = var.config.default_behavior.forwarded_values == null ? data.aws_cloudfront_cache_policy.this[var.config.default_behavior.cache_policy_name].id : null
-    origin_request_policy_id = var.config.default_behavior.forwarded_values == null ? try(data.aws_cloudfront_origin_request_policy.this[var.config.default_behavior.origin_request_policy_name].id, null) : null
+    cache_policy_id          = var.config.default_behavior.cache_policy_name != null ? data.aws_cloudfront_cache_policy.this[var.config.default_behavior.cache_policy_name].id : null
+    origin_request_policy_id = var.config.default_behavior.origin_request_policy_name != null ? data.aws_cloudfront_origin_request_policy.this[var.config.default_behavior.origin_request_policy_name].id : null
     forwarded_values         = var.config.default_behavior.forwarded_values
     min_ttl                  = var.config.default_behavior.min_ttl
     default_ttl              = var.config.default_behavior.default_ttl
@@ -103,8 +103,8 @@ locals {
         allowed_methods          = behavior.allowed_methods
         cached_methods           = behavior.cached_methods
         compress                 = behavior.compress
-        cache_policy_id          = behavior.forwarded_values == null ? data.aws_cloudfront_cache_policy.this[behavior.cache_policy_name].id : null
-        origin_request_policy_id = behavior.forwarded_values == null ? try(data.aws_cloudfront_origin_request_policy.this[behavior.origin_request_policy_name].id, null) : null
+        cache_policy_id          = behavior.cache_policy_name != null ? data.aws_cloudfront_cache_policy.this[behavior.cache_policy_name].id : null
+        origin_request_policy_id = behavior.origin_request_policy_name != null ? data.aws_cloudfront_origin_request_policy.this[behavior.origin_request_policy_name].id : null
         forwarded_values         = behavior.forwarded_values
         min_ttl                  = behavior.min_ttl
         default_ttl              = behavior.default_ttl
