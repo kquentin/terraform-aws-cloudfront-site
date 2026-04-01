@@ -68,6 +68,33 @@ module "site" {
 }
 ```
 
+### CloudFront Functions
+
+Same key-based indirection as Lambda@Edge: reference a logical key in your config JSON, and pass the actual ARNs via `cloudfront_function_arns`.
+
+```json
+{
+  "default_behavior": {
+    "function_associations": [
+      {
+        "event_type": "viewer-request",
+        "function_key": "auth"
+      }
+    ]
+  }
+}
+```
+
+```hcl
+module "site" {
+  # ...
+
+  cloudfront_function_arns = {
+    auth = aws_cloudfront_function.auth.arn
+  }
+}
+```
+
 ## Runtime config
 
 When `runtime_environment_config` is set in config, a CloudFront Function serves `/runtime-config.js` with cache disabled. The response exposes the key/values as `window.__ENV__`.
@@ -103,6 +130,7 @@ In your app:
 | price_class | string | PriceClass_All | no |
 | waf_arn | string | null | no |
 | edge_lambda_arns | map(string) | {} | no |
+| cloudfront_function_arns | map(string) | {} | no |
 
 ## Outputs
 
